@@ -92,7 +92,13 @@ document.getElementById('copiarBtn').addEventListener('click', () => {
     alert('Mensaje copiado');
 });
 
-// Modo oscuro
+// 🌙 Modo oscuro persistente
+if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+    darkToggle.checked = true;
+}
+
 darkToggle.addEventListener('change', () => {
     document.body.classList.toggle('dark');
+    localStorage.setItem("darkMode", darkToggle.checked);
 });
