@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Plantillas WhatsApp</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <h2>Plantillas WhatsApp</h2>
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <select id="plantilla">
+            <option value="">Seleccionar plantilla</option>
+        </select>
+
+        <div id="campos"></div>
+
+        <textarea id="resultado" placeholder="Aquí se generará el mensaje..."></textarea>
+
+        <button id="generarBtn">Generar mensaje</button>
+        <button id="copiarBtn">Copiar</button>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
