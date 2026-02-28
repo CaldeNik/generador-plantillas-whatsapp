@@ -31,10 +31,11 @@ body {
 
 .container {
     background: var(--card);
-    padding: 25px;
+    padding: 20px;
     border-radius: 14px;
     width: 100%;
     max-width: 520px;
+    margin: 16px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     transition: 0.3s;
     overflow: hidden;
@@ -112,4 +113,31 @@ input:checked + .slider {
 
 input:checked + .slider:before {
     transform: translateX(22px);
+}
+
+/* 📱 Ajustes mobile */
+@media (max-width: 600px) {
+    body {
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    .container {
+        margin: 10px;
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    select, input, textarea, button {
+        font-size: 16px; /* evita zoom en iOS */
+        padding: 14px;
+    }
+
+    textarea {
+        height: 160px;
+    }
 }
