@@ -1,56 +1,27 @@
 const plantillaSelect = document.getElementById('plantilla');
 const camposDiv = document.getElementById('campos');
-const resultado = document.getElementById('resultado');
 const darkToggle = document.getElementById('darkModeToggle');
 
 const plantillas = {
     cupon: {
         nombre: "Cupón de pago",
-        campos: ["Nombre", "Compañía", "Vehículo", "Monto"],
-        generar: (v) => `Hola ${v[0]}, ¿cómo estás? Te envío el cupón para abonar la próxima cuota de tu seguro.
-
-Compañía: ${v[1]}
-Vehículo: ${v[2]}
-Monto a abonar: ${v[3]}
-
-Adjunto encontrarás el cupón de pago listo para utilizar.
-
-Si necesitás alguna ayuda o querés revisar tu póliza, estoy acá para lo que necesites.`
+        metaTemplate: "recordatorio_cupon_de_pago",
+        campos: ["Nombre", "Compañía", "Vehículo", "Monto"]
     },
     link: {
         nombre: "Link de pago",
-        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Link"],
-        generar: (v) => `Hola ${v[0]}, ¿cómo estás? Te comparto el enlace para que puedas abonar la próxima cuota de tu seguro.
-Compañía: ${v[1]}
-Vehículo: ${v[2]}
-Monto a abonar: ${v[3]}
-
-Link de pago: ${v[4]}
-
-Si necesitás ayuda para realizar el pago o querés consultar algo sobre la póliza, estoy a tu disposición.`
+        metaTemplate: "recordatorio_link_de_pago",
+        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Link"]
     },
     cbu: {
         nombre: "Débito por CBU",
-        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Fecha"],
-        generar: (v) => `Hola ${v[0]}, ¿cómo estás? Te comparto la información de tu próximo vencimiento por débito directo.
-Compañía: ${v[1]}
-Vehículo: ${v[2]}
-
-El monto que se debitará en la próxima cuota es de $${v[3]}.
-La fecha estimada de débito es el ${v[4]}.
-
-Cualquier duda o si querés revisar tu póliza, estoy a tu disposición.`
+        metaTemplate: "recordatorio_debito_cbu",
+        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Fecha"]
     },
     tarjeta: {
         nombre: "Tarjeta de crédito",
-        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Fecha"],
-        generar: (v) => `Hola ${v[0]}, ¿cómo estás? Te escribo para avisarte sobre el vencimiento de la cuota de este mes de tu seguro.
-Compañía: ${v[1]}
-Vehículo: ${v[2]}
-
-Te recuerdo que esta póliza se abona de manera automática por débito en tarjeta de crédito, por un monto de $${v[3]}, en la fecha estimada ${v[4]}.
-
-Ante cualquier duda o si necesitás revisar tu cobertura, contá conmigo.`
+        metaTemplate: "recordatorio_tarjeta_credito",
+        campos: ["Nombre", "Compañía", "Vehículo", "Monto", "Fecha"]
     }
 };
 
@@ -62,6 +33,7 @@ for (const key in plantillas) {
     plantillaSelect.appendChild(option);
 }
 
+// generar inputs dinámicos
 plantillaSelect.addEventListener('change', () => {
     const plantilla = plantillas[plantillaSelect.value];
     camposDiv.innerHTML = '';
@@ -71,16 +43,37 @@ plantillaSelect.addEventListener('change', () => {
     });
 });
 
-document.getElementById('generarBtn').addEventListener('click', () => {
+// enviar mensaje
+document.getElementById('enviarBtn').addEventListener('click', async () => {
+
+    const telefono = document.getElementById('telefono').value;
+
     const inputs = camposDiv.querySelectorAll('input');
     const valores = [...inputs].map(i => i.value);
-    resultado.value = plantillas[plantillaSelect.value].generar(valores);
-});
 
-document.getElementById('copiarBtn').addEventListener('click', () => {
-    resultado.select();
-    document.execCommand('copy');
-    alert('Mensaje copiado');
+    const plantillaSeleccionada = plantillas[plantillaSelect.value];
+
+    const res = await fetch("http://localhost:3000/enviar-mensaje", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            telefono: telefono,
+            template: plantillaSeleccionada.metaTemplate,
+            variables: valores
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        alert("Mensaje enviado correctamente");
+    } else {
+        alert("Error al enviar mensaje");
+        console.error(data);
+    }
+
 });
 
 // 🌙 modo oscuro
